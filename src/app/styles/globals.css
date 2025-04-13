@@ -1,0 +1,119 @@
+/* globals.css */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f9fafb;
+    color: #171717;
+}
+
+
+.main {
+    display: flex;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.content {
+    flex: 1;
+    min-height: 100vh;
+    background-color: #f9fafb;
+}
+
+.hero {
+    text-align: center;
+    padding: 80px 20px 40px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero span {
+    color: #2563eb;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: 0 auto 20px;
+    color: #555;
+}
+
+.create-account-btn {
+    text-decoration: none;
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.features {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.features span {
+    color: #2563eb;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 12px;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #131a26;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}

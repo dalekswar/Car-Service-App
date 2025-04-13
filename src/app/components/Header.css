@@ -1,0 +1,35 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+    padding-left: 300px;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.help-link {
+    color: #555;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.user-icon {
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    padding: 0.4rem 0.6rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
