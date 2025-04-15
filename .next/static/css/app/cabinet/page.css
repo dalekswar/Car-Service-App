@@ -1,0 +1,103 @@
+/*!*************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/app/cabinet/cabinet.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************/
+.cabinet-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: 600;
+}
+
+input {
+    width: 90%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-top: 6px;
+    font-size: 16px;
+}
+
+h3 {
+    margin-top: 24px;
+    font-size: 20px;
+}
+
+.save-btn {
+    margin-top: 28px;
+    padding: 12px 24px;
+    background: #3b82f6;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.photo-upload {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.user-photo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 12px;
+}
+
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.save-button {
+    padding: 10px 24px;
+    background-color: #3d70ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.save-button:hover {
+    background-color: #2c5be7;
+}
+
+.save-message {
+    text-align: center;
+    color: #3d70ff;
+    font-weight: 500;
+    margin-top: 1rem;
+}
