@@ -16,8 +16,8 @@ export default function Sidebar() {
         { label: "Онлайн-запись", icon: <Calendar />, href: "/booking" },
         { label: "Отзывы", icon: <Star />, href: "/reviews" },
         { label: "О нас", icon: <Info />, href: "/about" },
+        { label: "Настройки", icon: <Settings />, href: "/settings" },
     ];
-
 
     return (
         <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
