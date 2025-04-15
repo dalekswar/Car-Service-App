@@ -28,31 +28,33 @@ export default function UserMenu() {
             }
         };
 
-        // Обработчик обновления из других вкладок
-        const handleStorageChange = () => checkAuth();
-
         document.addEventListener("mousedown", handleClickOutside);
-        window.addEventListener("storage", handleStorageChange);
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
 
+    // Обновление авторизации при изменении localStorage (аватар, телефон)
     useEffect(() => {
-        // 👇 Вызов после каждой навигации — например после авторизации
+        const updateFromStorage = () => checkAuth();
+        window.addEventListener("storage", updateFromStorage);
+
         const interval = setInterval(() => {
             checkAuth();
-        }, 500);
+        }, 300); // периодически проверяем localStorage
 
-        return () => clearInterval(interval);
+        return () => {
+            window.removeEventListener("storage", updateFromStorage);
+            clearInterval(interval);
+        };
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem("userPhone");
         localStorage.removeItem("userAvatar");
         setIsAuthenticated(false);
+        setAvatar("");
         router.push("/");
     };
 
