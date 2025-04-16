@@ -71,3 +71,20 @@
 .sidebar.collapsed .label {
     display: none;
 }
+
+.sidebar {
+    height: 100vh;
+    /* занимать всю высоту экрана */
+    overflow-y: auto;
+    /* включаем вертикальную прокрутку */
+    overflow-x: hidden;
+    /* скрываем горизонтальную */
+    /* остальной твой стиль, например: */
+    background-color: #111827;
+    color: white;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}

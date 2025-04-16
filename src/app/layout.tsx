@@ -3,18 +3,21 @@ import "./styles/globals.css";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { ReactNode } from "react";
+import { CartProvider } from "@/context/CartContext"; // ✅ добавлено
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
       <body>
-        <div className="app-container">
-          <Sidebar />
-          <div className="main-content">
-            <Header />
-            {children}
+        <CartProvider> {/* ✅ обернули всё */}
+          <div className="app-container">
+            <Sidebar />
+            <div className="main-content">
+              <Header />
+              {children}
+            </div>
           </div>
-        </div>
+        </CartProvider>
       </body>
     </html>
   );

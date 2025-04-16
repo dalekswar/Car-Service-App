@@ -11,38 +11,68 @@ export default function CabinetPage() {
         phone: "",
         carBrand: "",
         vin: "",
-        photo: ""
+        photo: "",
     });
+    const [message, setMessage] = useState("");
 
-    const [showMessage, setShowMessage] = useState(false);
-
+    // Загружаем данные при первом рендере
     useEffect(() => {
-        const saved = localStorage.getItem("userData");
-        if (saved) setForm(JSON.parse(saved));
-        const savedPhone = localStorage.getItem("userPhone");
-        if (savedPhone) setForm((f) => ({ ...f, phone: savedPhone }));
+        const phone = localStorage.getItem("userPhone") || "";
+        if (!phone) return;
+
+        const savedData = localStorage.getItem(`userData-${phone}`);
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                setForm((prev) => ({ ...prev, ...parsed }));
+                if (parsed.photo) {
+                    localStorage.setItem("userAvatar", parsed.photo); // для Header
+                }
+            } catch (err) {
+                console.error("Ошибка чтения userData:", err);
+            }
+        } else {
+            setForm((prev) => ({ ...prev, phone }));
+        }
     }, []);
 
+    // Изменение любого текстового поля
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Загрузка фото
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
         const reader = new FileReader();
         reader.onloadend = () => {
-            setForm((prev) => ({ ...prev, photo: reader.result as string }));
+            const base64 = reader.result as string;
+            const phone = form.phone;
+            const updatedForm = { ...form, photo: base64 };
+            setForm(updatedForm);
+            if (phone) {
+                localStorage.setItem(`userData-${phone}`, JSON.stringify(updatedForm));
+                localStorage.setItem("userAvatar", base64);
+            }
         };
         reader.readAsDataURL(file);
     };
 
+    // Сохранение данных
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        localStorage.setItem("userData", JSON.stringify(form));
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 3000);
+        const phone = form.phone;
+        if (phone) {
+            localStorage.setItem(`userData-${phone}`, JSON.stringify(form));
+            if (form.photo) {
+                localStorage.setItem("userAvatar", form.photo);
+            }
+            setMessage("Данные сохранены!");
+            setTimeout(() => setMessage(""), 3000);
+        }
     };
 
     return (
@@ -66,7 +96,7 @@ export default function CabinetPage() {
                 <input name="patronymic" value={form.patronymic} onChange={handleChange} />
 
                 <label>Телефон</label>
-                <input name="phone" value={form.phone} onChange={handleChange} disabled />
+                <input name="phone" value={form.phone} disabled />
 
                 <h3>Автомобили</h3>
 
@@ -81,7 +111,7 @@ export default function CabinetPage() {
 
                 <div className="button-wrapper">
                     <button className="save-button" type="submit">Сохранить</button>
-                    {showMessage && <p className="success-message">Данные сохранены!</p>}
+                    {message && <p className="saved-message">{message}</p>}
                 </div>
             </form>
         </div>

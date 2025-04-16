@@ -6,6 +6,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/booking/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/booking/page.js"
+    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -17,17 +22,17 @@
       "static/css/app/services/page.css",
       "static/chunks/app/services/page.js"
     ],
-    "/cabinet/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/cabinet/page.css",
-      "static/chunks/app/cabinet/page.js"
-    ],
     "/auth/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/auth/page.css",
       "static/chunks/app/auth/page.js"
+    ],
+    "/cabinet/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/cabinet/page.css",
+      "static/chunks/app/cabinet/page.js"
     ]
   }
 }

@@ -2,27 +2,33 @@
 
 import { useState, useMemo } from "react";
 import "./services.css";
+import { useCart } from "@/context/CartContext";
+import { Grid, List, ShoppingBag } from "lucide-react";
+
 
 const servicesData = [
-    { id: 1, title: "Диагностика двигателя", description: "Полная проверка и сканирование двигателя", price: 1200, image: "/images/engine.png", category: "Двигатель", format: "Диагностика", brand: "Бмвшка" },
-    { id: 2, title: "Замена масла", description: "Замена масла и фильтра", price: 900, image: "/images/oil.png", category: "Двигатель", format: "Плановое ТО", brand: "Мерседес" },
-    { id: 3, title: "Ремонт ходовой", description: "Диагностика и ремонт подвески", price: 2500, image: "/images/suspension.png", category: "Ходовая часть", format: "Срочный ремонт", brand: "Бмвшка" },
-    { id: 4, title: "Диагностика электрики", description: "Полная проверка электрооборудования", price: 1500, image: "/images/electrics.png", category: "Электрика", format: "Диагностика", brand: "Бентли" },
-    { id: 5, title: "Плановое ТО", description: "Плановое техническое обслуживание", price: 3000, image: "/images/to.png", category: "ТО", format: "Плановое ТО", brand: "Бентли" },
-    { id: 6, title: "Замена тормозов", description: "Замена тормозных колодок и дисков", price: 1800, image: "/images/brakes.png", category: "Ходовая часть", format: "Срочный ремонт", brand: "Мерседес" },
-    { id: 7, title: "Диагностика подвески", description: "Комплексная проверка подвески", price: 1100, image: "/images/diagnostics.png", category: "Ходовая часть", format: "Диагностика", brand: "Бмвшка" },
-    { id: 8, title: "Установка сигнализации", description: "Установка охранной системы", price: 4500, image: "/images/alarm.png", category: "Электрика", format: "Другое", brand: "Бентли" },
-    { id: 9, title: "Покраска кузова", description: "Полная или частичная покраска авто", price: 6000, image: "/images/paint.png", category: "Кузов", format: "Другое", brand: "Другое" },
-    { id: 10, title: "Мойка двигателя", description: "Профессиональная мойка двигателя", price: 700, image: "/images/clean.png", category: "Двигатель", format: "Другое", brand: "Другое" },
-    { id: 11, title: "Шиномонтаж", description: "Сезонная замена шин", price: 1300, image: "/images/tires.png", category: "Детейлинг", format: "Другое", brand: "Мерседес" },
-    { id: 12, title: "Полировка фар", description: "Полировка и восстановление прозрачности", price: 800, image: "/images/lights.png", category: "Детейлинг", format: "Другое", brand: "Другое" },
+    { id: 1, title: "Диагностика двигателя", description: "Полная проверка и сканирование двигателя", price: 1200, image: "/images/engine.png", category: "Двигатель", format: "Диагностика", brands: ["BMW", "Mercedes", "Bentley", "Другое"] },
+    { id: 2, title: "Замена масла", description: "Замена масла и фильтра", price: 900, image: "/images/oil.png", category: "Двигатель", format: "Плановое ТО", brands: ["BMW", "Mercedes", "Bentley", "Другое"] },
+    { id: 3, title: "Ремонт ходовой", description: "Диагностика и ремонт подвески", price: 2500, image: "/images/suspension.png", category: "Ходовая часть", format: "Срочный ремонт", brands: ["BMW", "Mercedes"] },
+    { id: 4, title: "Диагностика электрики", description: "Проверка электрооборудования", price: 1500, image: "/images/electrics.png", category: "Электрика", format: "Диагностика", brands: ["Bentley"] },
+    { id: 5, title: "Плановое ТО", description: "Плановое техническое обслуживание", price: 3000, image: "/images/to.png", category: "ТО", format: "Плановое ТО", brands: ["Bentley", "Другое"] },
+    { id: 6, title: "Замена тормозов", description: "Замена тормозных колодок и дисков", price: 1800, image: "/images/brakes.png", category: "Ходовая часть", format: "Срочный ремонт", brands: ["Mercedes"] },
+    { id: 7, title: "Диагностика подвески", description: "Проверка подвески", price: 1100, image: "/images/diagnostics.png", category: "Ходовая часть", format: "Диагностика", brands: ["BMW", "Bentley"] },
+    { id: 8, title: "Установка сигнализации", description: "Установка охранной системы", price: 4500, image: "/images/alarm.png", category: "Электрика", format: "Другое", brands: ["Bentley", "Другое"] },
+    { id: 9, title: "Покраска кузова", description: "Покраска авто", price: 6000, image: "/images/paint.png", category: "Кузов", format: "Другое", brands: ["Другое"] },
+    { id: 10, title: "Мойка двигателя", description: "Профессиональная мойка", price: 700, image: "/images/clean.png", category: "Двигатель", format: "Другое", brands: ["BMW", "Другое"] },
+    { id: 11, title: "Шиномонтаж", description: "Сезонная замена шин", price: 1300, image: "/images/tires.png", category: "Детейлинг", format: "Другое", brands: ["Mercedes", "BMW"] },
+    { id: 12, title: "Полировка фар", description: "Восстановление прозрачности", price: 800, image: "/images/lights.png", category: "Детейлинг", format: "Другое", brands: ["Другое"] },
 ];
 
-const categories = ["Двигатель", "Ходовая часть", "Диагностика", "Кузов", "Электрика", "Детейлинг", "ТО", "Другое"];
+
+const categories = ["Двигатель", "Ходовая часть", "Кузов", "Электрика", "Детейлинг", "ТО", "Другое"];
 const formats = ["Срочный ремонт", "Плановое ТО", "Диагностика", "Другое"];
 const brands = ["BMW", "Mercedes", "Bentley", "Другое"];
 
 const ITEMS_PER_PAGE = 9;
+
+
 
 export default function ServicesPage() {
     const [selectedCategory, setCategory] = useState("");
@@ -32,13 +38,15 @@ export default function ServicesPage() {
     const [sort, setSort] = useState("price");
     const [view, setView] = useState<"grid" | "list">("grid");
     const [currentPage, setCurrentPage] = useState(1);
+    const { addToCart } = useCart();
 
     const filtered = useMemo(() => {
         let result = servicesData;
         if (search) result = result.filter(s => s.title.toLowerCase().includes(search.toLowerCase()));
         if (selectedCategory) result = result.filter(s => s.category === selectedCategory);
         if (selectedFormat) result = result.filter(s => s.format === selectedFormat);
-        if (selectedBrand) result = result.filter(s => s.brand === selectedBrand);
+        if (selectedBrand) result = result.filter(s => s.brands.includes(selectedBrand)); // ✅
+
         return [...result].sort((a, b) => a[sort as "price"] - b[sort as "price"]);
     }, [search, selectedCategory, selectedFormat, selectedBrand, sort]);
 
@@ -104,9 +112,22 @@ export default function ServicesPage() {
                         <option value="title">По названию</option>
                     </select>
                     <div className="view-switch">
-                        <button onClick={() => setView("grid")}>🔲</button>
-                        <button onClick={() => setView("list")}>📃</button>
+                        <button
+                            onClick={() => setView("grid")}
+                            className={view === "grid" ? "active" : ""}
+                            aria-label="Вид сеткой"
+                        >
+                            <Grid />
+                        </button>
+                        <button
+                            onClick={() => setView("list")}
+                            className={view === "list" ? "active" : ""}
+                            aria-label="Вид списком"
+                        >
+                            <List />
+                        </button>
                     </div>
+
                 </div>
 
                 <div className={`cards ${view}`}>
@@ -118,7 +139,9 @@ export default function ServicesPage() {
                                 <p>{s.description}</p>
                                 <b>{s.price} ₽</b>
                             </div>
-                            <button className="add-to-cart">🛒</button>
+                            <button className="add-to-cart" onClick={() => addToCart(s.id)}>
+                                <ShoppingBag size={18} />
+                            </button>
                         </div>
                     ))}
                 </div>
