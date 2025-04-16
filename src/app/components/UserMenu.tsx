@@ -56,6 +56,7 @@ export default function UserMenu() {
         localStorage.removeItem("userPhone");
         localStorage.removeItem("userAvatar");
         localStorage.removeItem("userRole");
+        console.log("User phone:", phone);
         // Не удаляем userData-${phone}, чтобы сохранить профиль
 
         setIsAuthenticated(false);
