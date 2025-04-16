@@ -19,6 +19,8 @@ export default function UserMenu() {
         setIsAuthenticated(!!storedPhone);
         setAvatar(storedAvatar || "");
         setRole(storedRole);
+
+        console.log("Current role:", role);
     };
 
     useEffect(() => {
