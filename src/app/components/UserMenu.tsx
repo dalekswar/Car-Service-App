@@ -8,15 +8,17 @@ export default function UserMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [avatar, setAvatar] = useState("");
+    const [role, setRole] = useState<string | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
-    // Функция для проверки авторизации
     const checkAuth = () => {
         const storedPhone = localStorage.getItem("userPhone");
         const storedAvatar = localStorage.getItem("userAvatar");
+        const storedRole = localStorage.getItem("userRole");
         setIsAuthenticated(!!storedPhone);
         setAvatar(storedAvatar || "");
+        setRole(storedRole);
     };
 
     useEffect(() => {
@@ -28,34 +30,37 @@ export default function UserMenu() {
             }
         };
 
+        const handleStorageChange = () => checkAuth();
+
         document.addEventListener("mousedown", handleClickOutside);
+        window.addEventListener("storage", handleStorageChange);
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
 
-    // Обновление авторизации при изменении localStorage (аватар, телефон)
     useEffect(() => {
-        const updateFromStorage = () => checkAuth();
-        window.addEventListener("storage", updateFromStorage);
-
         const interval = setInterval(() => {
             checkAuth();
-        }, 300); // периодически проверяем localStorage
+        }, 500);
 
-        return () => {
-            window.removeEventListener("storage", updateFromStorage);
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, []);
 
     const handleLogout = () => {
+        const phone = localStorage.getItem("userPhone");
         localStorage.removeItem("userPhone");
         localStorage.removeItem("userAvatar");
+        localStorage.removeItem("userRole");
+        // Не удаляем userData-${phone}, чтобы сохранить профиль
+
         setIsAuthenticated(false);
         setAvatar("");
+        setRole(null);
         router.push("/");
+
     };
 
     return (

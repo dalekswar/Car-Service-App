@@ -8,6 +8,7 @@ export default function AuthPage() {
     const [step, setStep] = useState<"phone" | "code">("phone");
     const [phone, setPhone] = useState("");
     const [code, setCode] = useState<string[]>(Array(6).fill(""));
+    const [role, setRole] = useState("user");
     const [error, setError] = useState("");
     const router = useRouter();
 
@@ -21,8 +22,7 @@ export default function AuthPage() {
             return;
         }
         setError("");
-        localStorage.setItem("userPhone", phone);
-        setStep("code");
+        setStep("code"); // Переходим ко второму шагу
     };
 
     const handleCodeChange = (
@@ -48,9 +48,22 @@ export default function AuthPage() {
             setError("Введите все 6 цифр кода");
             return;
         }
+
+        // Сохраняем данные только после подтверждения
+        localStorage.setItem("userPhone", phone);
+        localStorage.setItem("userRole", role);
+
         setError("");
-        router.push("/cabinet");
+
+        // Если есть сохранённая корзина — отправляем на booking
+        const savedCart = localStorage.getItem("cart");
+        if (savedCart && JSON.parse(savedCart).length > 0) {
+            router.push("/booking");
+        } else {
+            router.push("/cabinet");
+        }
     };
+
 
     return (
         <div className="auth-container">
@@ -63,8 +76,19 @@ export default function AuthPage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
+
+                    <label>Выберите роль:</label>
+                    <select value={role} onChange={(e) => setRole(e.target.value)}>
+                        <option value="user">Пользователь</option>
+                        <option value="manager">Менеджер</option>
+                        <option value="mechanic">Механик</option>
+                    </select>
+
                     {error && <p className="error">{error}</p>}
-                    <button type="submit">Продолжить</button>
+                    <div className="button-wrapper">
+                        <button type="submit">Продолжить</button>
+                    </div>
+
                     <div className="divider">или войти с помощью</div>
                     <div className="socials">
                         <img src="/icons/vk.svg" alt="VK" className="social-icon" />

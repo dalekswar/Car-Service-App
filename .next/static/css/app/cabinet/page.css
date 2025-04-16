@@ -21,7 +21,7 @@ label {
     font-weight: 600;
 }
 
-input {
+.cabinet-form input:not([type="checkbox"]) {
     width: 90%;
     padding: 10px 12px;
     border: 1px solid #ddd;
@@ -29,6 +29,7 @@ input {
     margin-top: 6px;
     font-size: 16px;
 }
+
 
 h3 {
     margin-top: 24px;
