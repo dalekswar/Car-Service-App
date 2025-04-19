@@ -3,7 +3,7 @@ import "./styles/globals.css";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { ReactNode } from "react";
-import { CartProvider } from "@/context/CartContext"; // ✅ добавлено
+import { CartProvider } from "@/app/context/CartContext"; // ✅ добавлено
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

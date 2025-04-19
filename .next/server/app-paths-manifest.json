@@ -1,7 +1,14 @@
 {
-  "/booking/page": "app/booking/page.js",
-  "/page": "app/page.js",
-  "/services/page": "app/services/page.js",
+  "/api/avatar/route": "app/api/avatar/route.js",
+  "/api/services/route": "app/api/services/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
   "/auth/page": "app/auth/page.js",
-  "/cabinet/page": "app/cabinet/page.js"
+  "/bookorders/page": "app/bookorders/page.js",
+  "/booking/page": "app/booking/page.js",
+  "/cabinet/page": "app/cabinet/page.js",
+  "/page": "app/page.js",
+  "/reviews/page": "app/reviews/page.js",
+  "/services/page": "app/services/page.js"
 }

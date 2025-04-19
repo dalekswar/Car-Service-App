@@ -36,7 +36,7 @@ export default function Sidebar() {
 
     const userMenu = [
         { label: "Личный кабинет", icon: <User />, href: "/cabinet" },
-        { label: "Мои записи", icon: <BookOpen />, href: "/my-bookings" },
+        { label: "Мои записи", icon: <BookOpen />, href: "/bookorders" },
         { label: "Настройки", icon: <Settings />, href: "/settings" },
     ];
 
