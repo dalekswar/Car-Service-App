@@ -5,12 +5,14 @@ import { getRandomMechanic } from "@/app/lib/fetchHelpers";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 import "./StepConfirm.css";
+import type { ServiceItem } from "@/app/types";
 
-interface ServiceItem {
-    id: number;
-    title: string;
-    price: number;
-}
+
+// interface ServiceItem {
+//     id: number;
+//     title: string;
+//     price: number;
+// }
 
 type Props = {
     location: string;
