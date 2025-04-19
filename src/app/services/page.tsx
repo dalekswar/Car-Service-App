@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import "./services.css";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
 import { Grid, List, ShoppingBag } from "lucide-react";
 
 const categories = ["Двигатель", "Ходовая часть", "Кузов", "Электрика", "Детейлинг", "ТО", "Другое"];

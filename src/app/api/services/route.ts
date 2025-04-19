@@ -1,6 +1,6 @@
 // ✅ 1. API route (src/app/api/services/route.ts)
 import { NextResponse } from "next/server";
-import { remoteDb } from "@/lib/prisma";
+import { remoteDb } from "@/app/lib/prisma";
 
 export async function GET() {
     try {
