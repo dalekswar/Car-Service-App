@@ -102,3 +102,38 @@ h3 {
     font-weight: 500;
     margin-top: 1rem;
 }
+
+.car-group {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.add-car-btn,
+.remove-car-btn {
+    background-color: #f1f5ff;
+    border: none;
+    color: #3d70ff;
+    padding: 8px 12px;
+    margin-top: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.remove-car-btn {
+    background-color: #ffecec;
+    color: #e53935;
+}
+
+.add-car-btn:hover {
+    background-color: #dbe5ff;
+}
+
+.remove-car-btn:hover {
+    background-color: #ffc7c7;
+}

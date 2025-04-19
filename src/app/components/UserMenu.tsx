@@ -8,7 +8,7 @@ export default function UserMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [avatar, setAvatar] = useState("");
-    const [role, setRole] = useState<string | null>(null);
+    const [, setRole] = useState<string | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
@@ -19,29 +19,29 @@ export default function UserMenu() {
         setIsAuthenticated(!!storedPhone);
         setAvatar(storedAvatar || "");
         setRole(storedRole);
-
-        console.log("Current role:", role);
     };
 
     useEffect(() => {
-        checkAuth();
+        const checkAuth = () => {
+            const storedPhone = localStorage.getItem("userPhone");
+            const storedAvatar = localStorage.getItem("userAvatar");
+            const storedRole = localStorage.getItem("userRole");
 
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setMenuOpen(false);
-            }
+            setIsAuthenticated(!!storedPhone);
+            setAvatar(storedAvatar || "");
+            setRole(storedRole);
         };
 
-        const handleStorageChange = () => checkAuth();
+        checkAuth();
 
-        document.addEventListener("mousedown", handleClickOutside);
+        const handleStorageChange = () => checkAuth();
         window.addEventListener("storage", handleStorageChange);
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
+
 
     useEffect(() => {
         const interval = setInterval(() => {

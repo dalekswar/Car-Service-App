@@ -1,3 +1,4 @@
+// src/app/cabinet/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,13 +10,16 @@ export default function CabinetPage() {
         lastName: "",
         patronymic: "",
         phone: "",
-        carBrand: "",
-        vin: "",
         photo: "",
     });
+
+    const [cars, setCars] = useState<{ carBrand: string; vin: string }[]>([{
+        carBrand: "",
+        vin: "",
+    }]);
+
     const [message, setMessage] = useState("");
 
-    // Загружаем данные при первом рендере
     useEffect(() => {
         const phone = localStorage.getItem("userPhone") || "";
         if (!phone) return;
@@ -25,8 +29,9 @@ export default function CabinetPage() {
             try {
                 const parsed = JSON.parse(savedData);
                 setForm((prev) => ({ ...prev, ...parsed }));
+                setCars(parsed.cars || [{ carBrand: "", vin: "" }]);
                 if (parsed.photo) {
-                    localStorage.setItem("userAvatar", parsed.photo); // для Header
+                    localStorage.setItem("userAvatar", parsed.photo);
                 }
             } catch (err) {
                 console.error("Ошибка чтения userData:", err);
@@ -36,37 +41,55 @@ export default function CabinetPage() {
         }
     }, []);
 
-    // Изменение любого текстового поля
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Загрузка фото
-    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCarChange = (index: number, key: "carBrand" | "vin", value: string) => {
+        const updated = [...cars];
+        updated[index][key] = value;
+        setCars(updated);
+    };
+
+    const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64 = reader.result as string;
-            const phone = form.phone;
-            const updatedForm = { ...form, photo: base64 };
-            setForm(updatedForm);
-            if (phone) {
-                localStorage.setItem(`userData-${phone}`, JSON.stringify(updatedForm));
-                localStorage.setItem("userAvatar", base64);
-            }
-        };
-        reader.readAsDataURL(file);
+        const phone = form.phone;
+        const formData = new FormData();
+        formData.append("avatar", file);
+        formData.append("phone", phone);
+
+        const res = await fetch("/api/avatar", {
+            method: "POST",
+            body: formData,
+        });
+
+        const result = await res.json();
+
+        if (result.avatar) {
+            setForm((prev) => ({ ...prev, photo: result.avatar }));
+            localStorage.setItem("userAvatar", result.avatar);
+            localStorage.setItem(`userData-${phone}`, JSON.stringify({ ...form, photo: result.avatar, cars }));
+        }
     };
 
-    // Сохранение данных
+    const handleAddCar = () => {
+        setCars([...cars, { carBrand: "", vin: "" }]);
+    };
+
+    const handleRemoveCar = (index: number) => {
+        const updated = cars.filter((_, i) => i !== index);
+        setCars(updated);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const phone = form.phone;
         if (phone) {
-            localStorage.setItem(`userData-${phone}`, JSON.stringify(form));
+            const dataToSave = { ...form, cars };
+            localStorage.setItem(`userData-${phone}`, JSON.stringify(dataToSave));
             if (form.photo) {
                 localStorage.setItem("userAvatar", form.photo);
             }
@@ -99,12 +122,28 @@ export default function CabinetPage() {
                 <input name="phone" value={form.phone} disabled />
 
                 <h3>Автомобили</h3>
-
-                <label>Марка</label>
-                <input name="carBrand" value={form.carBrand} onChange={handleChange} />
-
-                <label>VIN номер</label>
-                <input name="vin" value={form.vin} onChange={handleChange} />
+                {cars.map((car, index) => (
+                    <div key={index} className="car-group">
+                        <label>Марка</label>
+                        <input
+                            value={car.carBrand}
+                            onChange={(e) => handleCarChange(index, "carBrand", e.target.value)}
+                        />
+                        <label>VIN номер</label>
+                        <input
+                            value={car.vin}
+                            onChange={(e) => handleCarChange(index, "vin", e.target.value)}
+                        />
+                        {cars.length > 1 && (
+                            <button type="button" className="remove-car-btn" onClick={() => handleRemoveCar(index)}>
+                                Удалить автомобиль
+                            </button>
+                        )}
+                    </div>
+                ))}
+                <button type="button" className="add-car-btn" onClick={handleAddCar}>
+                    + Добавить автомобиль
+                </button>
 
                 <label>Фото</label>
                 <input type="file" accept="image/*" onChange={handlePhotoChange} />
