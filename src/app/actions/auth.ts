@@ -2,22 +2,33 @@
 
 import { remoteDb, localDb } from "@/app/lib/prisma";
 
-// Получить ID роли по имени
 async function getRoleIdByName(name: string): Promise<number> {
-    const role = await remoteDb?.role.findUnique({ where: { name } });
-    if (!role) throw new Error(`Роль "${name}" не найдена`);
+    const role = await remoteDb.role.findUnique({ where: { name } });
+    if (!role) {
+        console.error(`❌ Роль "${name}" не найдена`);
+        throw new Error(`Роль "${name}" не найдена`);
+    }
     return role.id;
 }
 
-// Получить ID региона по умолчанию
 async function getDefaultRegionId(): Promise<number> {
-    const region = await remoteDb?.region.findFirst();
-    if (!region) throw new Error("Не найден ни один регион");
+    const region = await remoteDb.region.findFirst();
+    if (!region) {
+        console.error("❌ Не найден ни один регион");
+        throw new Error("Не найден ни один регион");
+    }
     return region.id;
 }
 
 export async function saveUserToDatabases(phone: string, roleName: string) {
     try {
+        if (!phone || !roleName) {
+            console.error("❌ Передан пустой phone или roleName");
+            throw new Error("Некорректные данные для регистрации");
+        }
+
+        console.log("➡️ Регистрация", { phone, roleName });
+
         const email = `${phone}@example.com`;
         const roleId = await getRoleIdByName(roleName);
         const regionId = await getDefaultRegionId();
@@ -34,17 +45,14 @@ export async function saveUserToDatabases(phone: string, roleName: string) {
             modifiedBy: 1,
         };
 
-        const databases: {
-            db: typeof remoteDb | typeof localDb | null;
-            label: string;
-        }[] = [
-                { db: remoteDb, label: "Удалённая" },
-                { db: localDb, label: "Локальная" },
-            ];
+        const databases = [
+            { db: remoteDb, label: "Удалённая" },
+            { db: localDb, label: "Локальная" },
+        ];
 
         for (const { db, label } of databases) {
             if (!db) {
-                console.warn(`${label} БД не инициализирована`);
+                console.error(`❌ ${label} база данных не доступна`);
                 continue;
             }
 
@@ -52,7 +60,9 @@ export async function saveUserToDatabases(phone: string, roleName: string) {
 
             if (!user) {
                 user = await db.user.create({ data: userData });
-                console.log(`${label} БД: создан пользователь ${user.id}`);
+                console.log(`✅ ${label}: создан пользователь с ID ${user.id}`);
+            } else {
+                console.log(`ℹ️ ${label}: пользователь уже существует`);
             }
 
             await db.userRole.upsert({
@@ -76,12 +86,14 @@ export async function saveUserToDatabases(phone: string, roleName: string) {
                             modifiedBy: user.id,
                         },
                     });
-                    console.log(`${label} БД: добавлен в employees`);
+                    console.log(`👷 ${label}: добавлен в employees`);
+                } else {
+                    console.log(`👷 ${label}: уже есть в employees`);
                 }
             }
         }
     } catch (err) {
-        console.error("Ошибка при сохранении пользователя:", err);
+        console.error("🔥 Ошибка при сохранении пользователя:", err);
         throw err;
     }
 }
