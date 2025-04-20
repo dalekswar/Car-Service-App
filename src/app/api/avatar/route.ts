@@ -1,4 +1,3 @@
-// src/app/api/avatar/route.ts
 import { writeFile } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,9 +22,17 @@ export async function POST(req: NextRequest) {
 
     const avatarPath = `/uploads/${fileName}`;
 
-    // Обновим в обеих БД
-    await remoteDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
-    await localDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
+    try {
+        await remoteDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
+    } catch (err) {
+        console.error("Ошибка при обновлении в удалённой БД:", err);
+    }
+
+    try {
+        await localDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
+    } catch (err) {
+        console.error("Ошибка при обновлении в локальной БД:", err);
+    }
 
     return NextResponse.json({ avatar: avatarPath });
 }
