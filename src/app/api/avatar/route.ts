@@ -19,19 +19,26 @@ export async function POST(req: NextRequest) {
     const filePath = path.join(process.cwd(), "public", "uploads", fileName);
 
     await writeFile(filePath, buffer);
-
     const avatarPath = `/uploads/${fileName}`;
 
     try {
-        await remoteDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
+        await remoteDb.user.update({
+            where: { phone },
+            data: { avatar: avatarPath },
+        });
     } catch (err) {
         console.error("Ошибка при обновлении в удалённой БД:", err);
     }
 
-    try {
-        await localDb.user.update({ where: { phone }, data: { avatar: avatarPath } });
-    } catch (err) {
-        console.error("Ошибка при обновлении в локальной БД:", err);
+    if (localDb) {
+        try {
+            await localDb.user.update({
+                where: { phone },
+                data: { avatar: avatarPath },
+            });
+        } catch (err) {
+            console.error("Ошибка при обновлении в локальной БД:", err);
+        }
     }
 
     return NextResponse.json({ avatar: avatarPath });
