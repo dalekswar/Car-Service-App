@@ -15,7 +15,7 @@ export const remoteDb =
     new PrismaClient({
         datasources: {
             db: {
-                url: process.env.DATABASE_URL,
+                url: process.env.DATABASE_URL!, // <- добавлен "!" для защиты
             },
         },
     });
@@ -26,12 +26,12 @@ export const localDb =
     new PrismaClient({
         datasources: {
             db: {
-                url: process.env.LOCAL_DATABASE_URL,
+                url: process.env.LOCAL_DATABASE_URL || "mysql://root:123456789@localhost:3306/centraldb",
             },
         },
     });
 
-// Кэширование клиентов
+// Кэширование клиентов (в dev режиме)
 if (process.env.NODE_ENV !== "production") {
     globalForRemote.remotePrisma = remoteDb;
     globalForLocal.localPrisma = localDb;
