@@ -1,33 +1,20 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import "./Header.css";
 import UserMenu from "./UserMenu";
 import { ShoppingBag, Trash2 } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
 import { useRouter } from "next/navigation";
-
-// Пример товаров (можно потом заменить общим файлом)
-const allServices = [
-    { id: 1, title: "Диагностика двигателя", price: 1200 },
-    { id: 2, title: "Замена масла", price: 900 },
-    { id: 3, title: "Ремонт ходовой", price: 2500 },
-    { id: 4, title: "Диагностика электрики", price: 1500 },
-    { id: 5, title: "Плановое ТО", price: 3000 },
-    { id: 6, title: "Замена тормозов", price: 1800 },
-    { id: 7, title: "Диагностика подвески", price: 1100 },
-    { id: 8, title: "Установка сигнализации", price: 4500 },
-    { id: 9, title: "Покраска кузова", price: 6000 },
-    { id: 10, title: "Мойка двигателя", price: 700 },
-    { id: 11, title: "Шиномонтаж", price: 1300 },
-    { id: 12, title: "Полировка фар", price: 800 },
-];
 
 export default function Header() {
     const { cart, removeFromCart, clearCart } = useCart();
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [allServices, setAllServices] = useState<{ id: number; title: string; price: number }[]>([]);
 
+    // Закрытие выпадашки при клике вне корзины
     const handleOutsideClick = (e: MouseEvent) => {
         if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
             setOpen(false);
@@ -39,6 +26,14 @@ export default function Header() {
         return () => {
             document.removeEventListener("mousedown", handleOutsideClick);
         };
+    }, []);
+
+    // Загрузка услуг из API
+    useEffect(() => {
+        fetch("/api/services")
+            .then((res) => res.json())
+            .then(setAllServices)
+            .catch((err) => console.error("Ошибка загрузки услуг в Header:", err));
     }, []);
 
     const handleContinue = () => {
@@ -63,7 +58,9 @@ export default function Header() {
         <header className="header">
             <div className="logo">Autoservice</div>
             <div className="header-right">
-                <a href="#" className="help-link">Нужна помощь?</a>
+                <a href="#" className="help-link">
+                    Нужна помощь?
+                </a>
 
                 <div className="cart-icon-wrapper" ref={dropdownRef}>
                     <div className="cart-icon-btn" onClick={() => setOpen(!open)}>
@@ -82,14 +79,20 @@ export default function Header() {
                                         <li key={id}>
                                             <span>{getServiceTitle(id)}</span>
                                             <span>{getServicePrice(id)} ₽</span>
-                                            <button onClick={() => removeFromCart(id)}><Trash2 size={16} /></button>
+                                            <button onClick={() => removeFromCart(id)}>
+                                                <Trash2 size={16} />
+                                            </button>
                                         </li>
                                     ))}
                                 </ul>
                             )}
                             <div className="cart-actions">
-                                <button onClick={clearCart} className="clear-btn">Очистить</button>
-                                <button onClick={handleContinue} className="continue-btn">Продолжить</button>
+                                <button onClick={clearCart} className="clear-btn">
+                                    Очистить
+                                </button>
+                                <button onClick={handleContinue} className="continue-btn">
+                                    Продолжить
+                                </button>
                             </div>
                         </div>
                     )}

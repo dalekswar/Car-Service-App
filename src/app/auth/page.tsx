@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import "./auth.css";
+import { remoteDb, localDb } from "@/app/lib/prisma";
+import { saveUserToDatabases } from "@/app/actions/auth";
 
 export default function AuthPage() {
     const [step, setStep] = useState<"phone" | "code">("phone");
@@ -22,7 +24,7 @@ export default function AuthPage() {
             return;
         }
         setError("");
-        setStep("code"); // Переходим ко второму шагу
+        setStep("code");
     };
 
     const handleCodeChange = (
@@ -42,20 +44,21 @@ export default function AuthPage() {
         }
     };
 
-    const handleCodeSubmit = (e: React.FormEvent) => {
+    const handleCodeSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (code.some((digit) => digit === "")) {
             setError("Введите все 6 цифр кода");
             return;
         }
 
-        // Сохраняем данные только после подтверждения
+        // Сохраняем в базу через server action
+        await saveUserToDatabases(phone, role); // 👈
+
         localStorage.setItem("userPhone", phone);
         localStorage.setItem("userRole", role);
 
         setError("");
 
-        // Если есть сохранённая корзина — отправляем на booking
         const savedCart = localStorage.getItem("cart");
         if (savedCart && JSON.parse(savedCart).length > 0) {
             router.push("/booking");
@@ -63,7 +66,6 @@ export default function AuthPage() {
             router.push("/cabinet");
         }
     };
-
 
     return (
         <div className="auth-container">
