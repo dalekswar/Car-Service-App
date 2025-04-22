@@ -1,0 +1,153 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  avatar    String?
+  region    Region   @relation(fields: [regionId], references: [id])
+  regionId  Int
+  created   DateTime
+  createdBy Int
+  modified  DateTime?
+  modifiedBy Int?
+
+  cars             Car[]
+  ordersUser       RepairOrder[] @relation("UserOrders")
+  ordersEmployee   RepairOrder[] @relation("EmployeeOrders")
+  employee         Employee?
+  userRoles        UserRole[]
+  payments         Payment[]
+}
+
+model Role {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  userRoles UserRole[]
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
+model Region {
+  id       Int     @id @default(autoincrement())
+  name     String
+  region   String
+  district String
+  users    User[]
+}
+
+model Employee {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @unique
+  position   String
+  salary     Decimal? @db.Decimal(10, 2)
+  hiredDate  DateTime?
+  created    DateTime
+  createdBy  Int
+  modified   DateTime?
+  modifiedBy Int?
+  workSchedules WorkSchedule[]
+}
+
+model WorkSchedule {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  workDate   DateTime
+  startTime  DateTime
+  endTime    DateTime
+  status     String
+  calendar   ProductionCalendar[]
+}
+
+model ProductionCalendar {
+  id            Int      @id @default(autoincrement())
+  workSchedule  WorkSchedule @relation(fields: [workScheduleId], references: [id])
+  workScheduleId Int
+  orders        RepairOrder? @relation(fields: [ordersId], references: [id])
+  ordersId      Int?
+  workDate      DateTime
+  isHoliday     Boolean
+}
+
+model Car {
+  id                 Int      @id @default(autoincrement())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             Int
+  brandId            Int
+  model              String
+  year               Int
+  vin                String   @unique
+  engineType         String
+  registrationNumber String
+  pts                String
+  sts                String
+  status             String
+  repairOrders       RepairOrder[]
+}
+
+model RepairOrder {
+  id         Int     @id @default(autoincrement())
+  car        Car     @relation(fields: [carId], references: [id])
+  carId      Int
+  user       User    @relation("UserOrders", fields: [userId], references: [id])
+  userId     Int
+  employee   User    @relation("EmployeeOrders", fields: [employeeId], references: [id])
+  employeeId Int
+  status     String
+  materials  String
+  createdAt  DateTime @default(now())
+  createdBy  Int
+  modifiedBy Int
+  calendar   ProductionCalendar[]
+  payments   Payment[]
+}
+
+model Part {
+  id           Int     @id @default(autoincrement())
+  name         String
+  supplierId   Int
+  price        Decimal  @db.Decimal(10, 2)
+  lastUpdated  DateTime @default(now())
+}
+
+model Payment {
+  id             Int     @id @default(autoincrement())
+  repairOrder    RepairOrder @relation(fields: [repairOrderId], references: [id])
+  repairOrderId  Int
+  user           User        @relation(fields: [userId], references: [id])
+  userId         Int
+  amount         Decimal     @db.Decimal(10, 2)
+  paymentDate    DateTime @default(now())
+  paymentMethod  String
+}
+
+model Service {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  price       Int
+  image       String
+  category    String
+  format      String
+  brands      String
+}
